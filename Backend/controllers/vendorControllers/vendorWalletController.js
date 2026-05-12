@@ -964,6 +964,152 @@ const getEarningsAnalytics = async (req, res) => {
   }
 };
 
+const WorkerHandover = require('../../models/WorkerHandover');
+
+/**
+ * Get cash handovers from workers
+ */
+const getWorkerHandovers = async (req, res) => {
+  try {
+    const vendorId = req.user.id;
+    const { status, page = 1, limit = 20 } = req.query;
+
+    const query = { vendorId };
+    if (status) query.status = status;
+
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const handovers = await WorkerHandover.find(query)
+      .populate('workerId', 'name phone profilePhoto')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    const total = await WorkerHandover.countDocuments(query);
+
+    res.status(200).json({
+      success: true,
+      data: handovers,
+      pagination: {
+        page: parseInt(page),
+        limit: parseInt(limit),
+        total,
+        pages: Math.ceil(total / parseInt(limit))
+      }
+    });
+  } catch (error) {
+    console.error('Get worker handovers error:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch handovers' });
+  }
+};
+
+/**
+ * Approve cash handover from worker
+ */
+const approveWorkerHandover = async (req, res) => {
+  try {
+    const vendorId = req.user.id;
+    const { handoverId } = req.params;
+    const { notes } = req.body;
+
+    const handover = await WorkerHandover.findOne({ _id: handoverId, vendorId });
+    if (!handover) {
+      return res.status(404).json({ success: false, message: 'Handover request not found' });
+    }
+
+    if (handover.status !== 'pending') {
+      return res.status(400).json({ success: false, message: `Handover already ${handover.status}` });
+    }
+
+    // Update handover status
+    handover.status = 'approved';
+    handover.approvedAt = new Date();
+    handover.vendorNotes = notes;
+    await handover.save();
+
+    // Mark associated transactions for the worker as "handover_completed"
+    if (handover.transactionIds && handover.transactionIds.length > 0) {
+      await Transaction.updateMany(
+        { _id: { $in: handover.transactionIds }, workerId: handover.workerId },
+        { $set: { 'metadata.handoverId': handover._id, 'metadata.handoverStatus': 'approved' } }
+      );
+    }
+
+    // Notify worker
+    const { createNotification } = require('../notificationControllers/notificationController');
+    await createNotification({
+      workerId: handover.workerId,
+      type: 'handover_approved',
+      title: '✅ Handover Approved',
+      message: `Vendor has approved your cash handover of ₹${handover.amount}.`,
+      relatedId: handover._id,
+      relatedType: 'worker_handover',
+      priority: 'high'
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Handover approved successfully',
+      data: handover
+    });
+
+  } catch (error) {
+    console.error('Approve handover error:', error);
+    res.status(500).json({ success: false, message: 'Failed to approve handover' });
+  }
+};
+
+/**
+ * Reject cash handover from worker
+ */
+const rejectWorkerHandover = async (req, res) => {
+  try {
+    const vendorId = req.user.id;
+    const { handoverId } = req.params;
+    const { reason } = req.body;
+
+    if (!reason) {
+      return res.status(400).json({ success: false, message: 'Rejection reason is required' });
+    }
+
+    const handover = await WorkerHandover.findOne({ _id: handoverId, vendorId });
+    if (!handover) {
+      return res.status(404).json({ success: false, message: 'Handover request not found' });
+    }
+
+    if (handover.status !== 'pending') {
+      return res.status(400).json({ success: false, message: `Handover already ${handover.status}` });
+    }
+
+    handover.status = 'rejected';
+    handover.rejectedAt = new Date();
+    handover.rejectionReason = reason;
+    await handover.save();
+
+    // Notify worker
+    const { createNotification } = require('../notificationControllers/notificationController');
+    await createNotification({
+      workerId: handover.workerId,
+      type: 'handover_rejected',
+      title: '❌ Handover Rejected',
+      message: `Vendor has rejected your cash handover of ₹${handover.amount}. Reason: ${reason}`,
+      relatedId: handover._id,
+      relatedType: 'worker_handover',
+      priority: 'high'
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Handover rejected',
+      data: handover
+    });
+
+  } catch (error) {
+    console.error('Reject handover error:', error);
+    res.status(500).json({ success: false, message: 'Failed to reject handover' });
+  }
+};
+
 module.exports = {
   getWallet,
   getTransactions,
@@ -974,5 +1120,9 @@ module.exports = {
   payWorker,
   requestWithdrawal,
   getWithdrawals,
-  getEarningsAnalytics
+  getEarningsAnalytics,
+  getWorkerHandovers,
+  approveWorkerHandover,
+  rejectWorkerHandover
 };
+

@@ -137,8 +137,68 @@ const requestPayout = async (req, res) => {
   }
 };
 
+const WorkerHandover = require('../../models/WorkerHandover');
+
+/**
+ * Handover collected cash to vendor
+ */
+const handoverCash = async (req, res) => {
+  try {
+    const workerId = req.user.id;
+    const { amount, bookingIds, transactionIds, notes } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ success: false, message: 'Invalid amount' });
+    }
+
+    const worker = await Worker.findById(workerId);
+    if (!worker || !worker.vendorId) {
+      return res.status(400).json({ success: false, message: 'Worker or vendor not found' });
+    }
+
+    const handover = await WorkerHandover.create({
+      workerId,
+      vendorId: worker.vendorId,
+      amount,
+      bookingIds: bookingIds || [],
+      transactionIds: transactionIds || [],
+      workerNotes: notes,
+      status: 'pending'
+    });
+
+    // Notify vendor
+    const { createNotification } = require('../notificationControllers/notificationController');
+    await createNotification({
+      vendorId: worker.vendorId,
+      type: 'cash_handover_requested',
+      title: '🤝 Cash Handover Request',
+      message: `Worker ${worker.name} has requested handover of ₹${amount} cash.`,
+      relatedId: handover._id,
+      relatedType: 'worker_handover',
+      priority: 'high',
+      pushData: {
+        type: 'cash_handover_requested',
+        handoverId: handover._id.toString(),
+        link: `/vendor/wallet/handovers`
+      }
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Handover request sent to vendor',
+      data: handover
+    });
+
+  } catch (error) {
+    console.error('Handover cash error:', error);
+    res.status(500).json({ success: false, message: 'Failed to request handover' });
+  }
+};
+
 module.exports = {
   getWallet,
   getTransactions,
-  requestPayout
+  requestPayout,
+  handoverCash
 };
+

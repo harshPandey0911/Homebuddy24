@@ -28,10 +28,14 @@ try {
 
 // Initialize only if not already initialized
 if (!admin.apps.length && serviceAccount) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-  console.log('✅ Firebase Admin SDK initialized');
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount)
+    });
+    console.log('✅ Firebase Admin SDK initialized');
+  } catch (error) {
+    console.error('❌ Failed to initialize Firebase Admin SDK:', error.message);
+  }
 }
 
 /**
@@ -143,8 +147,8 @@ async function sendPushNotification(tokens, payload) {
     message.webpush.notification = {
       title: message.notification.title,
       body: message.notification.body,
-      icon: payload.icon || '/Homster-logo.png',
-      badge: '/Homster-logo.png',
+      icon: payload.icon || '/Homebuddy24-logo.png',
+      badge: '/Homebuddy24-logo.png',
     };
 
     /*

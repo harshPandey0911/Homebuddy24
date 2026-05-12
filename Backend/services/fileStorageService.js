@@ -16,7 +16,7 @@ const uploadFile = async (file, options = {}) => {
   return new Promise((resolve, reject) => {
     try {
       const {
-        folder = 'appzeto',
+        folder = 'Homebuddy24',
         public_id,
         extension,
         type = 'image'

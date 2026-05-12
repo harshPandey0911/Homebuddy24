@@ -26,7 +26,7 @@ const Profile = () => {
     { id: 11, label: 'Add Custom Offering', icon: FiPlus, path: '/vendor/add-custom-content', highlight: true },
     { id: 7, label: 'Manage Address', icon: FiMapPin, path: '/vendor/address-management' },
     { id: 8, label: 'Settings', icon: FiSettings, path: '/vendor/settings' },
-    { id: 9, label: 'About Nexora', icon: null, customIcon: 'S', path: '/vendor/about-cleaning-expert' },
+    { id: 9, label: 'About Homebuddy24', icon: null, customIcon: 'S', path: '/vendor/about-cleaning-expert' },
   ];
 
   const [profile, setProfile] = useState(null);

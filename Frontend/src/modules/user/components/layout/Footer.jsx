@@ -86,7 +86,7 @@ const Footer = () => {
               <Logo className="h-10 w-auto" />
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
-              Nexora Go is your one-stop destination for all home services. From electrical repairs to premium salon services, we bring the experts to your doorstep.
+              Homebuddy24 is your one-stop destination for all home services. From electrical repairs to premium salon services, we bring the experts to your doorstep.
             </p>
             <div className="flex items-center gap-4">
               {[FiFacebook, FiTwitter, FiInstagram, FiLinkedin].map((Icon, i) => (
@@ -138,7 +138,7 @@ const Footer = () => {
         {/* Bottom Row */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <p className="text-gray-400 text-sm">
-            © {currentYear} {settings?.companyName || 'Nexora Go'}. All rights reserved.
+            © {currentYear} {settings?.companyName || 'Homebuddy24'}. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <Link to="#" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Privacy</Link>

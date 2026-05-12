@@ -276,7 +276,7 @@ const homeContentSchema = new mongoose.Schema({
 
   // Site Identity
   siteIdentity: {
-    brandName: { type: String, default: 'NEXORA GO' },
+    brandName: { type: String, default: 'Homebuddy24' },
     slogan: { type: String, default: 'Everything you need, one place' }
   },
 
@@ -289,7 +289,7 @@ const homeContentSchema = new mongoose.Schema({
 
   // App Download Section
   appDownload: {
-    title: { type: String, default: 'Download the Nexora GO App' },
+    title: { type: String, default: 'Download the Homebuddy24 App' },
     subtitle: { type: String, default: 'Better experience, exclusive offers & faster everything. Scan to download or use the stores.' },
     playStoreUrl: { type: String, default: '#' },
     appStoreUrl: { type: String, default: '#' },

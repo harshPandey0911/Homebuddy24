@@ -460,7 +460,7 @@ const AdminSidebar = ({ isOpen, onClose }) => {
 
       {/* Sidebar - Desktop Fixed */}
       <div
-        className="hidden lg:flex fixed left-0 top-0 bottom-0 z-30"
+        className="hidden lg:flex fixed left-0 top-0 bottom-0 z-[100]"
         style={{ width: '278px' }}
       >
         {sidebarContent}

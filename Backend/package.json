@@ -1,11 +1,12 @@
 {
-  "name": "Appzeto-backend",
+  "name": "homebuddy24-backend",
   "version": "1.0.0",
-  "description": "Backend API for Appzeto platform",
+  "description": "Backend API for Homebuddy24 platform",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js",
+    "kill-port": "kill-port 5000",
+    "dev": "npm run kill-port 2>nul & nodemon server.js",
     "test": "node tests",
     "seed:admin": "node scripts/seedAdmin.js",
     "seed:database": "node scripts/seedDatabase.js",
@@ -23,7 +24,7 @@
     "upload:services": "node scripts/uploadServiceImages.js"
   },
   "keywords": [
-    "Appzeto",
+    "Homebuddy24",
     "api",
     "express",
     "mongodb"
@@ -58,6 +59,7 @@
     "streamifier": "^0.1.1"
   },
   "devDependencies": {
+    "kill-port": "^2.0.1",
     "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.10",
     "supertest": "^6.3.4"

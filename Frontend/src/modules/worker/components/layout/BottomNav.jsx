@@ -76,26 +76,11 @@ const BottomNav = memo(() => {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 bg-white"
-      style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        width: '100%',
-        zIndex: 40,
-        willChange: 'transform',
-        transform: 'translateZ(0)',
-        backfaceVisibility: 'hidden',
-        WebkitBackfaceVisibility: 'hidden',
-        borderTop: '2px solid rgba(0, 0, 0, 0.35)',
-        borderTopLeftRadius: '20px',
-        borderTopRightRadius: '20px',
-        boxShadow: '0 -8px 24px rgba(0, 0, 0, 0.15), 0 -4px 12px rgba(0, 0, 0, 0.1), 0 -2px 6px rgba(0, 0, 0, 0.08)',
-        background: 'linear-gradient(to top, #FFFFFF 0%, #FAFAFA 100%)',
-      }}
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[92%] max-w-md z-50 transition-all duration-500"
     >
-      <div className="flex items-center justify-around px-2 py-2">
+      <div 
+        className="bg-white/80 backdrop-blur-xl border border-white/20 rounded-[32px] px-2 py-3 shadow-2xl shadow-black/10 flex items-center justify-around"
+      >
         {navItems.map((item) => {
           const isActive = location.pathname === item.path ||
             (item.path === '/worker/dashboard' && location.pathname === '/worker');
@@ -105,81 +90,40 @@ const BottomNav = memo(() => {
             <button
               key={item.path}
               onClick={() => handleNavClick(item.path)}
-              className="flex flex-col items-center justify-center relative w-16 h-14 rounded-xl transition-all duration-300 group"
-              style={{
-                // No inline background here
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) {
-                  gsap.to(e.currentTarget, { scale: 1.05, duration: 0.2 });
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) {
-                  gsap.to(e.currentTarget, { scale: 1.0, duration: 0.2 });
-                }
-              }}
+              className="flex flex-col items-center justify-center relative px-4 py-2 rounded-2xl active:scale-90 transition-all group"
             >
-              {/* Active Indicator Bar - Gradient Accent */}
-              {isActive && (
-                <div
-                  className="absolute -top-2 w-10 h-1 rounded-b-full"
+              <div className="relative">
+                <IconComponent
+                  className={`w-5 h-5 transition-all duration-300 ${isActive ? 'scale-110 text-[#0F4A44]' : 'text-gray-400 group-hover:text-gray-600'}`}
                   style={{
-                    background: themeColors.gradient,
-                    boxShadow: `0 2px 8px ${themeColors.brand.teal}4D`,
+                    color: isActive ? '#0F4A44' : '#9CA3AF',
                   }}
                 />
-              )}
-
-              {/* Active Background - Very Subtle Teal Tint */}
-              {isActive && (
-                <div
-                  className="absolute inset-0 rounded-xl scale-90"
-                  style={{ backgroundColor: `${themeColors.brand.teal}0A` }}
-                />
-              )}
-
-              <div className="relative z-10 flex flex-col items-center justify-center">
-                <div className="relative mb-0.5">
-                  <IconComponent
-                    ref={(el) => {
-                      iconRefs.current[item.path] = el;
-                    }}
-                    className={`w-6 h-6 transition-all duration-300 ${isActive ? 'scale-110' : 'text-gray-400 group-hover:text-gray-600'}`}
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span
+                    className="absolute -top-1.5 -right-2 bg-red-500 text-white text-[8px] font-black rounded-full flex items-center justify-center border-2 border-white"
                     style={{
-                      color: isActive ? themeColors.button : '#9CA3AF',
-                      filter: isActive ? `drop-shadow(0 2px 4px ${themeColors.brand.teal}1A)` : 'none'
+                      minWidth: '16px',
+                      height: '16px'
                     }}
-                  />
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span
-                      className="absolute bg-gradient-to-br from-red-500 to-red-600 text-white text-xs font-bold rounded-full flex items-center justify-center"
-                      style={{
-                        top: '-6px',
-                        right: '-8px',
-                        minWidth: '18px',
-                        height: '18px',
-                        padding: '0 4px',
-                        fontSize: '10px',
-                        lineHeight: '18px',
-                        border: '2px solid white',
-                        boxShadow: '0 2px 5px rgba(239, 68, 68, 0.4)',
-                        zIndex: 50,
-                      }}
-                    >
-                      {item.badge > 9 ? '9+' : item.badge}
-                    </span>
-                  )}
-                </div>
-                <span
-                  className={`text-[10px] transition-colors duration-300 ${isActive ? 'font-bold' : 'font-medium text-gray-500'}`}
-                  style={{
-                    color: isActive ? themeColors.button : '#6B7280',
-                  }}
-                >
-                  {item.label}
-                </span>
+                  >
+                    {item.badge > 9 ? '9+' : item.badge}
+                  </span>
+                )}
               </div>
+              <span
+                className={`text-[9px] mt-1 tracking-tight transition-all duration-300 ${isActive ? 'font-black text-[#0F4A44]' : 'font-bold text-gray-400 opacity-0 group-hover:opacity-100 group-hover:text-gray-600'}`}
+                style={{
+                  transform: isActive ? 'translateY(0)' : 'translateY(2px)'
+                }}
+              >
+                {item.label}
+              </span>
+
+              {/* Active Indicator Dot */}
+              {isActive && (
+                <div className="absolute -bottom-1 w-1 h-1 bg-[#0F4A44] rounded-full" />
+              )}
             </button>
           );
         })}

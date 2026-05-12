@@ -8,7 +8,7 @@ const { uploadFile } = require('../services/fileStorageService');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/appzeto');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/Homebuddy24');
     console.log('MongoDB connected');
   } catch (error) {
     console.error('MongoDB connection error:', error);
@@ -77,17 +77,17 @@ const seedElectricianService = async () => {
       imageUploads[banner.key] = await uploadImageToCloudinary(banner.path, 'electrician/banners');
     }
 
-    // Use Homster Cloudinary URLs
+    // Use Homebuddy24 Cloudinary URLs
     const organizedImageUrls = {
-      homeWiring: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135138/Homster/electricity/service/home-wiring.jpg',
-      electricalPanel: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135139/Homster/electricity/service/electrical-panel-upgrade.jpg',
-      smartHomeSetup: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135140/Homster/electricity/service/smart-home-setup.jpg',
-      switchSocket: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135141/Homster/electricity/service/switch-socket.jpg',
-      fan: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135144/Homster/electricity/service/fan.png',
-      light: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135146/Homster/electricity/service/light.jpg',
-      wiring: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135147/Homster/electricity/service/wiring.jpg',
-      mcb: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135149/Homster/electricity/service/mcb.jpg',
-      inverter: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135150/Homster/electricity/service/invertor.jpg'
+      homeWiring: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135138/Homebuddy24/electricity/service/home-wiring.jpg',
+      electricalPanel: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135139/Homebuddy24/electricity/service/electrical-panel-upgrade.jpg',
+      smartHomeSetup: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135140/Homebuddy24/electricity/service/smart-home-setup.jpg',
+      switchSocket: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135141/Homebuddy24/electricity/service/switch-socket.jpg',
+      fan: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135144/Homebuddy24/electricity/service/fan.png',
+      light: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135146/Homebuddy24/electricity/service/light.jpg',
+      wiring: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135147/Homebuddy24/electricity/service/wiring.jpg',
+      mcb: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135149/Homebuddy24/electricity/service/mcb.jpg',
+      inverter: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766135150/Homebuddy24/electricity/service/invertor.jpg'
     };
 
     Object.assign(imageUploads, organizedImageUrls);

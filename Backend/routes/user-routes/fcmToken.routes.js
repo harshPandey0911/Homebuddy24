@@ -177,7 +177,7 @@ router.post('/test', authenticate, async (req, res) => {
 
     const response = await sendPushNotification(uniqueTokens, {
       title: '🔔 Test Notification',
-      body: 'This is a test notification from Appzeto!',
+      body: 'This is a test notification from Homebuddy24!',
       data: {
         type: 'test',
         link: '/'

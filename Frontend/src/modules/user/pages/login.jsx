@@ -255,7 +255,7 @@ const Login = () => {
                     <div className="w-full border-t border-gray-200" />
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">New to Nexora Go?</span>
+                    <span className="px-2 bg-white text-gray-500">New to Homebuddy24?</span>
                   </div>
                 </div>
 
@@ -354,7 +354,7 @@ const Login = () => {
       </div>
 
       <div className="mt-8 text-center text-xs text-gray-400 animate-fade-in animate-stagger-4">
-        &copy; {new Date().getFullYear()} Nexora Go. All rights reserved.
+        &copy; {new Date().getFullYear()} Homebuddy24. All rights reserved.
       </div>
 
     </div>

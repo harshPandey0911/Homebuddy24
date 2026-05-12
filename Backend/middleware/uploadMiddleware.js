@@ -1,18 +1,31 @@
 const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+// Configure Cloudinary
 const cloudinary = require('../config/cloudinary');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-// Configure Cloudinary Storage with optimization
+// Ensure local uploads directory exists
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Check if Cloudinary is properly configured (simple check for placeholders)
+const isCloudinaryConfigured = 
+  process.env.CLOUDINARY_CLOUD_NAME && 
+  process.env.CLOUDINARY_CLOUD_NAME !== 'h' && 
+  process.env.CLOUDINARY_API_KEY && 
+  process.env.CLOUDINARY_API_KEY !== '638952';
+
+// 1. Cloudinary Storage
 const cloudinaryStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'appzeto',
+    folder: 'Homebuddy24',
     allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'gif'],
-    // Apply quality-preserving optimization on upload
-    transformation: [
-      { quality: 'auto:good', fetch_format: 'auto' }
-    ],
+    transformation: [{ quality: 'auto:good', fetch_format: 'auto' }],
     public_id: (req, file) => {
       const name = file.originalname.split('.')[0];
       return `${name}-${Date.now()}`;
@@ -20,8 +33,19 @@ const cloudinaryStorage = new CloudinaryStorage({
   }
 });
 
-// Configure memory storage (backup/legacy)
-const memoryStorage = multer.memoryStorage();
+// 2. Local Disk Storage (Fallback)
+const diskStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+// Use Cloudinary if configured, otherwise fallback to local disk
+const activeStorage = isCloudinaryConfigured ? cloudinaryStorage : diskStorage;
 
 // File filter - only images
 const imageFilter = (req, file, cb) => {
@@ -50,9 +74,9 @@ const documentFilter = (req, file, cb) => {
   }
 };
 
-// Generic Image Upload (Cloudinary) - Expecting 'file' field
+// Generic Image Upload (Cloudinary or Local) - Expecting 'file' field
 const uploadImage = multer({
-  storage: cloudinaryStorage,
+  storage: activeStorage,
   fileFilter: imageFilter,
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB limit
@@ -61,7 +85,7 @@ const uploadImage = multer({
 
 // Profile photo upload (legacy/specific) - Expecting 'photo' field
 const uploadProfilePhoto = multer({
-  storage: cloudinaryStorage, // Updated to use Cloudinary
+  storage: activeStorage,
   fileFilter: imageFilter,
   limits: {
     fileSize: 5 * 1024 * 1024
@@ -70,7 +94,7 @@ const uploadProfilePhoto = multer({
 
 // Document upload (multiple files)
 const uploadDocuments = multer({
-  storage: memoryStorage, // Keep memory for docs for now or update if needed
+  storage: activeStorage, // Fallback to activeStorage for docs too
   fileFilter: documentFilter,
   limits: {
     fileSize: 5 * 1024 * 1024

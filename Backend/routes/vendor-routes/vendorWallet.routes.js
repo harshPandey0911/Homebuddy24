@@ -12,7 +12,10 @@ const {
   getWalletSummary,
   payWorker,
   requestWithdrawal,
-  getWithdrawals
+  getWithdrawals,
+  getWorkerHandovers,
+  approveWorkerHandover,
+  rejectWorkerHandover
 } = require('../../controllers/vendorControllers/vendorWalletController');
 
 // Validation rules
@@ -22,7 +25,6 @@ const payWorkerValidation = [
   body('notes').optional().trim()
 ];
 
-// Validation rules
 const cashCollectionValidation = [
   body('bookingId').notEmpty().withMessage('Booking ID is required'),
   body('amount').isFloat({ min: 1 }).withMessage('Valid amount is required')
@@ -63,5 +65,10 @@ router.post('/withdraw', authenticate, isVendor, [
 
 // Get withdrawal history
 router.get('/wallet/withdrawals', authenticate, isVendor, getWithdrawals);
+
+// Worker Cash Handovers
+router.get('/wallet/worker-handovers', authenticate, isVendor, getWorkerHandovers);
+router.post('/wallet/worker-handovers/:handoverId/approve', authenticate, isVendor, approveWorkerHandover);
+router.post('/wallet/worker-handovers/:handoverId/reject', authenticate, isVendor, rejectWorkerHandover);
 
 module.exports = router;

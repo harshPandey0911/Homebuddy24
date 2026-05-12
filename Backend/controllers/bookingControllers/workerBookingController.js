@@ -616,7 +616,24 @@ const collectCash = async (req, res) => {
         // Create Transactions
         const Transaction = require('../../models/Transaction');
 
-        // 1. Cash Collected
+        // 1. Worker Transaction: Cash Collected (This makes it show up in worker wallet)
+        await Transaction.create({
+          workerId,
+          vendorId: booking.vendorId,
+          bookingId: booking._id,
+          type: 'cash_collected',
+          amount: grandTotal,
+          status: 'completed',
+          paymentMethod: 'cash collected',
+          description: `Cash ₹${grandTotal} collected for booking #${booking.bookingNumber}`,
+          metadata: {
+            type: 'cash_collected',
+            collectedBy: 'worker',
+            billId: bill._id.toString()
+          }
+        });
+
+        // 2. Vendor Transaction: Cash Collected (Dues Increase)
         await Transaction.create({
           vendorId: booking.vendorId,
           bookingId: booking._id,
@@ -636,7 +653,7 @@ const collectCash = async (req, res) => {
           }
         });
 
-        // 2. Earnings Credit
+        // 3. Earnings Credit for Vendor
         if (vendorEarning > 0) {
           await Transaction.create({
             vendorId: booking.vendorId,
@@ -656,6 +673,7 @@ const collectCash = async (req, res) => {
         }
       }
     }
+
 
     // Notify User
     const { createNotification } = require('../notificationControllers/notificationController');

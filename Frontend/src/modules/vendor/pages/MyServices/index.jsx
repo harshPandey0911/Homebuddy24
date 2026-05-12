@@ -48,7 +48,6 @@ const MyServices = () => {
   }, []);
 
   return (
-  return (
     <div className="min-h-screen pb-24" style={{ background: '#FFFFFF' }}>
       <header className="px-6 py-5 flex items-center justify-between bg-transparent">
         <h1 className="text-xl font-black text-gray-900">My Services</h1>

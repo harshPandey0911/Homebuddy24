@@ -18,11 +18,11 @@ const appliancesData = {
       {
         title: 'AC Installation',
         slug: 'ac-installation-service', // Distinct slug
-        iconUrl: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766482645/appzeto/ac-install-icon.png',
+        iconUrl: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766482645/Homebuddy24/ac-install-icon.png',
         subCategories: [
           {
             title: 'Split AC',
-            imageUrl: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766482645/appzeto/split-ac.png',
+            imageUrl: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766482645/Homebuddy24/split-ac.png',
             cards: [
               { title: 'Standard Installation', price: 1499, duration: '60 mins', features: ['Indoor/Outdoor unit mounting', 'Drilling', 'Gas check'], description: 'Professional installation of Split AC.' },
               { title: 'Uninstallation', price: 599, duration: '30 mins', features: ['Gas pump down', 'Safe removal'] }
@@ -30,7 +30,7 @@ const appliancesData = {
           },
           {
             title: 'Window AC',
-            imageUrl: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766482645/appzeto/window-ac.png',
+            imageUrl: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766482645/Homebuddy24/window-ac.png',
             cards: [
               { title: 'Standard Installation', price: 699, duration: '45 mins', features: ['Woodwork excluded', 'Secure mounting'] },
               { title: 'Uninstallation', price: 399, duration: '30 mins' }
@@ -41,7 +41,7 @@ const appliancesData = {
       {
         title: 'AC Repair',
         slug: 'ac-repair-service',
-        iconUrl: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766482645/appzeto/ac-repair-icon.png',
+        iconUrl: 'https://res.cloudinary.com/shubhamcloudinary/image/upload/v1766482645/Homebuddy24/ac-repair-icon.png',
         subCategories: [
           {
             title: 'Split AC',

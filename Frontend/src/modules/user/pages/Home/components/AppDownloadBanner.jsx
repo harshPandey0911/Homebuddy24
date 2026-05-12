@@ -3,7 +3,7 @@ import { FaGooglePlay, FaApple } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 const AppDownloadBanner = ({ appData }) => {
-  const title = appData?.title || 'Download the Nexora GO App';
+  const title = appData?.title || 'Download the Homebuddy24 App';
   const subtitle = appData?.subtitle || 'Better experience, exclusive offers & faster everything. Scan to download or use the stores.';
   const playStoreUrl = appData?.playStoreUrl || '#';
   const appStoreUrl = appData?.appStoreUrl || '#';

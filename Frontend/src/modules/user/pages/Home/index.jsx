@@ -9,6 +9,7 @@ import ServiceCategories from './components/ServiceCategories';
 import { publicCatalogService } from '../../../../services/catalogService';
 import { useCart } from '../../../../context/CartContext';
 import { useCity } from '../../../../context/CityContext';
+import { useAuth } from '../../../../context/AuthContext';
 import { toast } from 'react-hot-toast';
 import { registerFCMToken } from '../../../../services/pushNotificationService';
 import { motion } from 'framer-motion';
@@ -59,10 +60,20 @@ const Home = () => {
 
   const toAssetUrl = (url) => {
     if (!url) return '';
-    const clean = url.replace('/api/upload', '/upload');
-    if (clean.startsWith('http')) return clean;
-    const base = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/api$/, '');
-    return `${base}${clean.startsWith('/') ? '' : '/'}${clean}`;
+    if (url.startsWith('http') || url.startsWith('data:')) return url;
+    
+    const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/api$/, '');
+    
+    // Ensure url starts with a slash
+    const cleanPath = url.startsWith('/') ? url : `/${url}`;
+    
+    // If path already contains 'uploads/', just prepend base
+    if (cleanPath.startsWith('/uploads/')) {
+      return `${baseUrl}${cleanPath}`;
+    }
+    
+    // Fallback: assume it's in uploads if it's just a filename
+    return `${baseUrl}/uploads${cleanPath}`;
   };
 
   const [address, setAddress] = useState(localStorage.getItem('currentAddress') || 'Select Location');
@@ -79,6 +90,7 @@ const Home = () => {
 
   const { cartCount, addToCart } = useCart();
   const { currentCity, cities, selectCity, loading: cityLoading } = useCity();
+  const { user } = useAuth();
 
   // Clean up legacy storage keys on mount
   useEffect(() => {
@@ -491,56 +503,30 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen pb-20 relative bg-white">
-      {/* Refined Brand Mesh Gradient Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0"
-          style={{
-            background: `
-              radial-gradient(at 0% 0%, ${getColorWithOpacity('teal', 0.15)} 0%, transparent 70%),
-              radial-gradient(at 100% 0%, ${getColorWithOpacity('teal', 0.10)} 0%, transparent 70%),
-              radial-gradient(at 100% 100%, ${getColorWithOpacity('teal', 0.05)} 0%, transparent 75%),
-              radial-gradient(at 0% 100%, ${getColorWithOpacity('teal', 0.08)} 0%, transparent 70%),
-              #F0F9FF
-            `
-          }}
-        />
-        {/* Elegant Dot Grid Pattern */}
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: `radial-gradient(var(--brand-teal) 0.8px, transparent 0.8px)`,
-            backgroundSize: '32px 32px'
-          }}
-        />
-      </div>
-
+    <div className="min-h-screen pb-24 relative bg-white">
       <motion.div
         className="relative z-10"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
-        <motion.div
-          variants={itemVariants}
-          className="backdrop-blur-xl sticky top-0 z-50 border-b border-black/[0.03] transition-all duration-300"
-          style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)' }}
-        >
+        {/* Dark Green Header & Hero Section Container */}
+        <div className="bg-[#0F4A44]">
           <Header
             location={address}
             onLocationClick={handleLocationClick}
-            navLinks={homeContent?.navLinks}
-            siteIdentity={homeContent?.siteIdentity}
-            homeContent={homeContent}
+            user={user}
+            toAssetUrl={toAssetUrl}
           />
-        </motion.div>
 
-        {!isSearchOpen && (
-          <HeroBanner 
-            banners={offerBanners} 
-            onSearchClick={() => setIsSearchOpen(true)} 
-            heroData={homeContent?.heroSection}
-          />
-        )}
+          {!isSearchOpen && (
+            <HeroBanner 
+              onSearchClick={() => setIsSearchOpen(true)} 
+              heroData={homeContent?.heroSection}
+              toAssetUrl={toAssetUrl}
+            />
+          )}
+        </div>
 
 
 

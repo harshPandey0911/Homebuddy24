@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { FiHome, FiBriefcase, FiUsers, FiUser } from 'react-icons/fi';
 import { HiHome, HiBriefcase, HiUsers, HiUser } from 'react-icons/hi';
 import { FaWallet } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 import { vendorTheme as themeColors } from '../../../../theme';
 
 const BottomNav = memo(() => {
@@ -70,54 +71,49 @@ const BottomNav = memo(() => {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md"
-      style={{
-        zIndex: 40,
-        borderTop: '1px solid rgba(0, 0, 0, 0.05)',
-        boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.03)',
-      }}
+      className="fixed bottom-6 left-0 right-0 z-40 w-full px-6"
     >
-      <div className="flex items-center justify-around px-2 py-3">
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path ||
-            (item.path === '/vendor/dashboard' && location.pathname === '/vendor');
-          const IconComponent = isActive ? item.activeIcon : item.icon;
+      <div
+        className="max-w-md mx-auto py-3 px-4 rounded-[32px] bg-white shadow-[0_15px_40px_rgba(0,0,0,0.12)] border border-black/5"
+      >
+        <div className="flex items-center justify-around relative px-2">
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path ||
+              (item.path === '/vendor/dashboard' && location.pathname === '/vendor');
+            const IconComponent = isActive ? item.activeIcon : item.icon;
 
-          return (
-            <button
-              key={item.path}
-              onClick={() => handleNavClick(item.path)}
-              className="flex flex-col items-center justify-center relative px-2 transition-all duration-300 active:scale-90"
-            >
-              {/* Active Indicator Dot */}
-              {isActive && (
-                <div
-                  className="absolute -top-3 w-1.5 h-1.5 rounded-full bg-black shadow-lg shadow-gray-200"
-                />
-              )}
-
-              <div className="relative flex flex-col items-center justify-center">
-                <div className="relative mb-1">
+            return (
+              <button
+                key={item.path}
+                onClick={() => handleNavClick(item.path)}
+                className={`flex items-center justify-center transition-all duration-300 relative ${isActive ? 'px-4 py-2.5 rounded-full bg-[#0F4A44] text-white shadow-lg shadow-[#0F4A44]/20' : 'p-2 text-gray-400'}`}
+              >
+                <div className="flex items-center gap-2">
                   <IconComponent
-                    className={`w-6 h-6 transition-all duration-300 ${isActive ? 'text-black' : 'text-gray-300'}`}
+                    className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-900 opacity-60'}`}
                   />
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span
-                      className="absolute -top-1.5 -right-1.5 bg-black text-white text-[8px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-sm min-w-[16px] h-[16px] px-0.5"
+                  {isActive && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      className="text-[12px] font-black whitespace-nowrap overflow-hidden tracking-tight"
                     >
-                      {item.badge > 9 ? '9+' : item.badge}
-                    </span>
+                      {item.label}
+                    </motion.span>
                   )}
                 </div>
-                <span
-                  className={`text-[9px] font-black uppercase tracking-widest transition-colors duration-300 ${isActive ? 'text-black' : 'text-gray-300'}`}
-                >
-                  {item.label}
-                </span>
-              </div>
-            </button>
-          );
-        })}
+
+                {item.badge !== undefined && item.badge > 0 && (
+                  <span
+                    className={`absolute -top-1 -right-1 text-white text-[8px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-sm min-w-[16px] h-[16px] px-0.5 ${isActive ? 'bg-orange-500' : 'bg-black'}`}
+                  >
+                    {item.badge > 9 ? '9+' : item.badge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </nav>
   );

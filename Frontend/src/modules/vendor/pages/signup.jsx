@@ -169,6 +169,30 @@ const VendorSignup = () => {
     });
   };
 
+  const completeRegistration = async (registerData) => {
+    try {
+      setIsLoading(true);
+      const response = await register(registerData);
+
+      if (response.success) {
+        toast.success(
+          <div className="flex flex-col">
+            <span className="font-bold">Application Submitted!</span>
+            <span className="text-xs">Your profile is now under review.</span>
+          </div>,
+          { icon: <FiCheckCircle className="text-[#D68F35]" />, duration: 5000 }
+        );
+        navigate('/vendor/login');
+      } else {
+        toast.error(response.message || 'Registration failed');
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Registration failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleDetailsSubmit = async (e) => {
     e.preventDefault();
 
@@ -197,45 +221,26 @@ const VendorSignup = () => {
     setIsLoading(true);
 
     if (verificationToken) {
-      try {
-        const aadharDoc = formData.documents.find(d => d.type === 'aadhar')?.url || null;
-        const aadharBackDoc = formData.documents.find(d => d.type === 'aadharBack')?.url || null;
-        const panDoc = formData.documents.find(d => d.type === 'pan')?.url || null;
-        const otherDocs = formData.documents.filter(d => d.type === 'other').map(d => d.url);
+      const aadharDoc = formData.documents.find(d => d.type === 'aadhar')?.url || null;
+      const aadharBackDoc = formData.documents.find(d => d.type === 'aadharBack')?.url || null;
+      const panDoc = formData.documents.find(d => d.type === 'pan')?.url || null;
+      const otherDocs = formData.documents.filter(d => d.type === 'other').map(d => d.url);
 
-        const registerData = {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phoneNumber,
-          aadhar: formData.aadhar,
-          pan: formData.pan,
-          service: [],
-          aadharDocument: aadharDoc,
-          aadharBackDocument: aadharBackDoc,
-          panDocument: panDoc,
-          otherDocuments: otherDocs,
-          verificationToken
-        };
+      const registerData = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phoneNumber,
+        aadhar: formData.aadhar,
+        pan: formData.pan,
+        service: [],
+        aadharDocument: aadharDoc,
+        aadharBackDocument: aadharBackDoc,
+        panDocument: panDoc,
+        otherDocuments: otherDocs,
+        verificationToken
+      };
 
-        const response = await register(registerData);
-
-        if (response.success) {
-          toast.success(
-            <div className="flex flex-col">
-              <span className="font-bold">Application Submitted!</span>
-              <span className="text-xs">Please complete the training module.</span>
-            </div>,
-            { icon: <FiCheckCircle className="text-[#D68F35]" />, duration: 5000 }
-          );
-          navigate('/vendor/training');
-        } else {
-          toast.error(response.message || 'Registration failed');
-        }
-      } catch (error) {
-        toast.error(error.response?.data?.message || 'Registration failed');
-      } finally {
-        setIsLoading(false);
-      }
+      await completeRegistration(registerData);
       return;
     }
 
@@ -310,8 +315,6 @@ const VendorSignup = () => {
     }
     setIsLoading(true);
     try {
-      // 1. Verify OTP using the unified verify-login endpoint
-      // This will return isNewUser: true and a verificationToken for new vendors
       const response = await verifyLogin({ 
         phone: formData.phoneNumber, 
         otp: otpValue 
@@ -319,21 +322,21 @@ const VendorSignup = () => {
 
       if (response.success && response.isNewUser) {
         setIsLoading(false);
-        toast.success('OTP Verified! Please complete the training module.');
+        toast.success('OTP Verified!');
         
-        // Prepare registration data to be passed to Training page
+        // Prepare registration data
         const aadharDoc = formData.documents.find(d => d.type === 'aadhar')?.url || null;
         const aadharBackDoc = formData.documents.find(d => d.type === 'aadharBack')?.url || null;
         const panDoc = formData.documents.find(d => d.type === 'pan')?.url || null;
         const otherDocs = formData.documents.filter(d => d.type === 'other').map(d => d.url);
 
-        const pendingRegisterData = {
+        const registerData = {
           name: formData.name,
           email: formData.email,
           phone: formData.phoneNumber,
           aadhar: formData.aadhar,
           pan: formData.pan,
-          service: [], // Default empty
+          service: [],
           aadharDocument: aadharDoc,
           aadharBackDocument: aadharBackDoc,
           panDocument: panDoc,
@@ -341,14 +344,8 @@ const VendorSignup = () => {
           verificationToken: response.verificationToken
         };
 
-        // Store in sessionStorage as fallback
-        sessionStorage.setItem('pendingVendorRegistration', JSON.stringify(pendingRegisterData));
-        
-        // Navigate to training with data
-        navigate('/vendor/training', { state: { registerData: pendingRegisterData } });
+        await completeRegistration(registerData);
       } else if (response.success && !response.isNewUser) {
-        // This shouldn't happen if they came through signup flow with a new number,
-        // but if they are already a vendor, they might be logged in now.
         setIsLoading(false);
         toast.success('Account already exists. Logged in successfully.');
         navigate('/vendor/dashboard');

@@ -64,40 +64,10 @@ const BottomNav = React.memo(() => {
 
   const activeTab = getActiveTab();
   const activeIndex = navItems.findIndex(item => item.id === activeTab);
-  const activeColor = navItemColors[activeTab];
-
-
-
-  // Update indicator position when active tab changes
-  useEffect(() => {
-    const updateIndicator = () => {
-      if (navRef.current) {
-        const buttons = navRef.current.querySelectorAll('button');
-        if (buttons[activeIndex]) {
-          const button = buttons[activeIndex];
-          const navRect = navRef.current.getBoundingClientRect();
-          const buttonRect = button.getBoundingClientRect();
-
-          setIndicatorStyle({
-            left: buttonRect.left - navRect.left + (buttonRect.width / 2) - 16, // Center the 32px indicator
-            width: 32
-          });
-        }
-      }
-    };
-
-    // Run immediately
-    updateIndicator();
-
-    // Run after a short delay to account for layout shifts
-    const timer = setTimeout(updateIndicator, 100);
-    
-    window.addEventListener('resize', updateIndicator);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', updateIndicator);
-    };
-  }, [activeIndex, activeTab, cartCount]); // Added cartCount as it might change layout
+  const activeColor = {
+    primary: '#0F4A44', // Dark Teal from screenshot
+    text: '#FFFFFF',
+  };
 
   const handleTabClick = (path) => {
     navigate(path);
@@ -105,105 +75,53 @@ const BottomNav = React.memo(() => {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 w-full lg:hidden"
+      className="fixed bottom-6 left-0 right-0 z-40 w-full lg:hidden px-6"
       style={{
         WebkitBackfaceVisibility: 'hidden',
       }}
     >
       <div
-        className="w-full pb-4 pt-3 px-2"
+        className="max-w-md mx-auto py-3 px-4 rounded-[32px]"
         style={{
-          background: 'rgba(255, 255, 255, 0.98)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 -4px 30px rgba(0, 0, 0, 0.08)',
-          borderTop: '1px solid rgba(229, 231, 235, 0.6)',
+          background: '#FFFFFF',
+          boxShadow: '0 15px 40px rgba(0, 0, 0, 0.12)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
         }}
       >
-        <div ref={navRef} className="flex items-center justify-around max-w-md mx-auto relative">
-
-          {/* Animated Sliding Indicator */}
-          <motion.div
-            className="absolute -top-3 h-1 rounded-full"
-            animate={{
-              left: indicatorStyle.left,
-              width: indicatorStyle.width,
-              background: activeColor?.gradient || navItemColors.home.gradient,
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 380,
-              damping: 30
-            }}
-            style={{
-              boxShadow: `0 2px 12px ${activeColor?.shadow || navItemColors.home.shadow}`,
-            }}
-          />
-
+        <div ref={navRef} className="flex items-center justify-between max-w-md mx-auto relative px-2">
           {navItems.map((item) => {
             const IconComponent = activeTab === item.id ? item.filledIcon : item.icon;
             const isActive = activeTab === item.id;
-            const itemColor = navItemColors[item.id];
 
             return (
-              <motion.button
+              <button
                 key={item.id}
                 onClick={() => handleTabClick(item.path)}
-                whileTap={{ scale: 0.9 }}
-                className="flex flex-col items-center justify-center w-16 h-14 rounded-2xl transition-all duration-200 relative"
+                className={`flex items-center justify-center transition-all duration-300 relative ${isActive ? 'px-5 py-2.5 rounded-full bg-[#0F4A44] text-white' : 'p-2 text-gray-400'}`}
               >
-                {/* Active Background Glow */}
-                <AnimatePresence>
+                <div className="flex items-center gap-2">
+                  <IconComponent
+                    className={`w-6 h-6 ${isActive ? 'text-white' : 'text-gray-900 opacity-70'}`}
+                  />
                   {isActive && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ duration: 0.2 }}
-                      className="absolute inset-1 rounded-xl"
-                      style={{
-                        background: itemColor.bg,
-                      }}
-                    />
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: 'auto' }}
+                      className="text-[14px] font-bold whitespace-nowrap overflow-hidden"
+                    >
+                      {item.label}
+                    </motion.span>
                   )}
-                </AnimatePresence>
-
-                <div className="relative z-10 flex flex-col items-center justify-center">
-                  <motion.div
-                    className="relative mb-1"
-                    animate={{
-                      scale: isActive ? 1.1 : 1,
-                      y: isActive ? -2 : 0
-                    }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  >
-                    <IconComponent
-                      className="w-6 h-6 transition-colors duration-200"
-                      style={{
-                        color: isActive ? itemColor.primary : '#9CA3AF',
-                      }}
-                    />
-                    {item.isCart && cartCount > 0 && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-1.5 -right-2.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[9px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white shadow-lg"
-                      >
-                        {cartCount > 9 ? '9+' : cartCount}
-                      </motion.span>
-                    )}
-                  </motion.div>
-                  <motion.span
-                    animate={{
-                      color: isActive ? itemColor.primary : '#6B7280',
-                      fontWeight: isActive ? 600 : 500
-                    }}
-                    className="text-[10px]"
-                  >
-                    {item.label}
-                  </motion.span>
                 </div>
-              </motion.button>
+                
+                {item.isCart && !isActive && cartCount > 0 && (
+                  <span
+                    className="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold rounded-full min-w-[16px] h-[16px] flex items-center justify-center border-2 border-white"
+                  >
+                    {cartCount > 9 ? '9+' : cartCount}
+                  </span>
+                )}
+              </button>
             );
           })}
         </div>

@@ -12,7 +12,7 @@ const seedAdmin = async () => {
     console.log('✅ Connected to MongoDB\n');
 
     // Check if admin already exists
-    const existingAdmin = await Admin.findOne({ email: 'admin@appzeto.com' });
+    const existingAdmin = await Admin.findOne({ email: 'admin@Homebuddy24.com' });
     if (existingAdmin) {
       console.log('⚠️  Admin user already exists! Resetting password...');
       existingAdmin.password = 'admin123';
@@ -26,7 +26,7 @@ const seedAdmin = async () => {
     // Create admin user
     const adminData = {
       name: 'Super Admin',
-      email: 'admin@appzeto.com',
+      email: 'admin@Homebuddy24.com',
       password: 'admin123', // Plain text, let model pre-save hook hash it
       role: 'super_admin',
       isActive: true,
@@ -47,7 +47,7 @@ const seedAdmin = async () => {
 
     const admin = await Admin.create(adminData);
     console.log('✅ Admin user created successfully!');
-    console.log('📧 Email: admin@appzeto.com');
+    console.log('📧 Email: admin@Homebuddy24.com');
     console.log('🔑 Password: admin123');
     console.log('🌐 Login URL: http://localhost:5173/admin/login\n');
 

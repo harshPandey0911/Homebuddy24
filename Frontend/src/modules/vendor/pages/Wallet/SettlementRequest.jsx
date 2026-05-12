@@ -105,36 +105,29 @@ const SettlementRequest = () => {
     });
   };
 
-  const uploadToCloudinary = async (file) => {
-    // 1. Get Signature from Backend
+  const uploadToServer = async (file) => {
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    const sigRes = await fetch(`${apiUrl}/api/upload/sign-signature`);
-    const sigData = await sigRes.json();
-
-    if (!sigData.success) {
-      throw new Error(sigData.message || 'Failed to get upload signature');
-    }
-
-    const { signature, timestamp, cloudName, apiKey, folder } = sigData;
-
-    // 2. Upload to Cloudinary
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('api_key', apiKey);
-    formData.append('timestamp', timestamp);
-    formData.append('signature', signature);
-    if (folder) formData.append('folder', folder);
 
-    const res = await fetch(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      { method: 'POST', body: formData }
-    );
+    const res = await fetch(`${apiUrl}/api/upload`, {
+      method: 'POST',
+      body: formData,
+      // No headers needed for FormData, fetch adds boundary automatically
+    });
 
     const data = await res.json();
-    if (data.error) {
-      throw new Error(data.error.message);
+    if (!data.success) {
+      throw new Error(data.message || 'Upload failed');
     }
-    return data.secure_url;
+
+    // Handle relative URLs from local storage
+    let imageUrl = data.imageUrl;
+    if (imageUrl && imageUrl.startsWith('/uploads/')) {
+      imageUrl = `${apiUrl}${imageUrl}`;
+    }
+    
+    return imageUrl;
   };
 
   const handleNativeCamera = async () => {
@@ -143,7 +136,7 @@ const SettlementRequest = () => {
       if (file) {
         setProofPreview(URL.createObjectURL(file));
         const loadingToast = toast.loading('Uploading Proof...');
-        const secureUrl = await uploadToCloudinary(file);
+        const secureUrl = await uploadToServer(file);
         setFormData(prev => ({ ...prev, paymentProof: secureUrl }));
         toast.dismiss(loadingToast);
         toast.success('Proof captured & uploaded!');
@@ -176,7 +169,7 @@ const SettlementRequest = () => {
       const file = await compressImage(originalFile);
 
       // Upload
-      const secureUrl = await uploadToCloudinary(file);
+      const secureUrl = await uploadToServer(file);
 
       setFormData(prev => ({ ...prev, paymentProof: secureUrl }));
       toast.dismiss(loadingToast);

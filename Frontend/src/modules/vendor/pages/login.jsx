@@ -189,7 +189,7 @@ const VendorLogin = () => {
           {step === 'phone' ? 'Authorized Access' : 'Security Verification'}
         </h2>
         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-loose">
-          {step === 'phone' ? 'Nexora Go Network Gateway' : `Encryption Code Sent to ${phoneNumber}`}
+          {step === 'phone' ? 'Homebuddy24 Network Gateway' : `Encryption Code Sent to ${phoneNumber}`}
         </p>
       </div>
 
