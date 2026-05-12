@@ -16,6 +16,14 @@ const ScrapItems = lazy(() => import('../pages/Scrap'));
 const Payments = lazy(() => import('../pages/Payments'));
 const Settlements = lazy(() => import('../pages/Settlements'));
 const Reports = lazy(() => import('../pages/Reports'));
+const Reviews = lazy(() => import('../pages/Reviews'));
+const Plans = lazy(() => import('../pages/Plans/Plans'));
+const Commission = lazy(() => import('../pages/Commission'));
+const OfferBanners = lazy(() => import('../pages/OfferBanners'));
+const FooterLinks = lazy(() => import('../pages/FooterLinks'));
+const Settings = lazy(() => import('../pages/Settings'));
+const Support = lazy(() => import('../pages/Support'));
+const Training = lazy(() => import('../pages/TrainingManagement'));
 
 // User App Config Pages
 const HomePage = lazy(() => import('../pages/UserCategories/pages/HomePage'));
@@ -32,7 +40,7 @@ const LoadingFallback = () => (
   <div className="flex items-center justify-center min-h-screen bg-slate-50">
     <div className="flex flex-col items-center gap-4">
       <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-      <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Loading Nexora Admin...</p>
+      <p className="text-slate-500 font-bold animate-pulse uppercase tracking-widest text-xs">Loading Homebuddy24 Admin...</p>
     </div>
   </div>
 );
@@ -74,6 +82,14 @@ const AdminRoutes = () => {
           <Route path="payments/*" element={<Payments />} />
           <Route path="settlements/*" element={<Settlements />} />
           <Route path="reports/*" element={<Reports />} />
+          <Route path="reviews" element={<Reviews />} />
+          <Route path="plans" element={<Plans />} />
+          <Route path="commission" element={<Commission />} />
+          <Route path="offer-banners" element={<OfferBanners />} />
+          <Route path="footer-links" element={<FooterLinks />} />
+          <Route path="settings/*" element={<Settings />} />
+          <Route path="support" element={<Support />} />
+          <Route path="training" element={<Training />} />
         </Route>
 
         {/* 404 Redirect */}

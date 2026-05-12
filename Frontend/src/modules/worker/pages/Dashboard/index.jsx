@@ -222,32 +222,26 @@ const Dashboard = () => {
       <Header title="Dashboard" showBack={false} notificationCount={stats.pendingJobs} />
 
       <main className="pt-0">
-        {/* Profile Card Section */}
-        <div className="px-4 pt-4 pb-2">
+        {/* Profile Card Section (Dark Forest Theme) */}
+        <div className="px-5 pt-6 pb-2">
           <div
-            className="rounded-2xl p-4 cursor-pointer active:scale-98 transition-all duration-200 relative overflow-hidden"
+            className="rounded-[32px] p-6 cursor-pointer active:scale-98 transition-all duration-300 relative overflow-hidden shadow-2xl shadow-[#0F4A44]/20"
             onClick={() => navigate('/worker/profile')}
             style={{
-              background: themeColors.button,
-              border: `2px solid ${themeColors.button}`,
+              background: 'linear-gradient(135deg, #0F4A44 0%, #0D3D38 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
             }}
           >
-            {/* Decorative Pattern */}
-            <div
-              className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10"
-              style={{
-                background: `radial-gradient(circle, ${themeColors.button} 0%, transparent 70%)`,
-                transform: 'translate(20px, -20px)',
-              }}
-            />
-
-            <div className="relative z-10 flex items-center gap-3">
+            {/* Ambient Glow */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+            
+            <div className="relative z-10 flex items-center gap-4">
               {/* Profile Photo */}
               <div
-                className="w-16 h-16 rounded-full flex items-center justify-center shrink-0 overflow-hidden"
+                className="w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 overflow-hidden shadow-lg border-2 border-white/20"
                 style={{
-                  background: `linear-gradient(135deg, ${themeColors.button} 0%, ${themeColors.button}dd 100%)`,
-                  border: `2.5px solid #FFFFFF`,
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  backdropFilter: 'blur(10px)',
                 }}
               >
                 {workerProfile.photo ? (
@@ -259,79 +253,39 @@ const Dashboard = () => {
                     height={64}
                   />
                 ) : (
-                  <FiUser className="w-8 h-8" style={{ color: '#FFFFFF' }} />
+                  <FiUser className="w-8 h-8 text-white" />
                 )}
               </div>
 
               {/* Profile Info */}
               <div className="flex-1 min-w-0">
-                <p className="text-xl font-bold uppercase tracking-wider mb-0.5" style={{
-                  color: '#FFFFFF',
-                  textShadow: `1px 1px 0px rgba(0, 0, 0, 0.2)`,
-                  letterSpacing: '0.1em',
-                }}>
-                  WELCOME !
+                <p className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">
+                  Active Professional
                 </p>
-                <h2 className="text-lg font-bold text-white truncate mb-0">{workerProfile.name}</h2>
-                <p className="text-sm text-white truncate font-medium opacity-90 mb-1.5">
-                  Verified Professional
-                </p>
-
+                <h2 className="text-xl font-black text-white truncate tracking-tight mb-1">{workerProfile.name}</h2>
+                
                 {/* Status Indicator */}
-                <div className="flex items-center gap-1.5">
-                  <div
-                    className={`w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`}
-                    style={{
-                      boxShadow: isOnline ? '0 0 8px #4ade80' : 'none'
-                    }}
-                  />
-                  <span className="text-[11px] font-black uppercase text-white tracking-widest">
-                    {isOnline ? 'ACTIVE NOW' : 'OFFLINE NOW'}
+                <div className="flex items-center gap-2 mt-2">
+                  <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`} />
+                  <span className="text-[10px] font-black text-white/60 tracking-widest uppercase">
+                    {isOnline ? 'Online & Ready' : 'Currently Offline'}
                   </span>
                 </div>
               </div>
 
-              {/* Status Toggle Component */}
-              <div className="flex flex-col items-center gap-2">
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!statusUpdating) toggleStatus();
-                  }}
-                  className={`relative w-14 h-7 rounded-full cursor-pointer transition-all duration-300 ${isOnline ? 'bg-green-500' : 'bg-gray-400'
-                    }`}
-                  style={{
-                    boxShadow: isOnline ? 'inset 0 2px 4px rgba(0,0,0,0.1), 0 0 10px rgba(34, 197, 94, 0.3)' : 'inset 0 2px 4px rgba(0,0,0,0.1)',
-                  }}
-                >
-                  {/* Toggle Handle */}
-                  <div
-                    className={`absolute top-1 w-5 h-5 bg-white rounded-full transition-all duration-300 flex items-center justify-center shadow-md ${isOnline ? 'left-8' : 'left-1'
-                      }`}
-                  >
-                    {statusUpdating ? (
-                      <div className="w-3 h-3 border-2 border-gray-300 border-t-green-500 rounded-full animate-spin" />
-                    ) : (
-                      <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
-                    )}
-                  </div>
-                </div>
-                <span className="text-[9px] font-black text-white uppercase tracking-tighter opacity-90">
-                  {isOnline ? 'GO OFFLINE' : 'GO ONLINE'}
-                </span>
-              </div>
-
-              {/* Arrow Icon */}
-              <div
-                className="p-2.5 rounded-xl shrink-0"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.25)',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  border: '1.5px solid rgba(255, 255, 255, 0.3)',
+              {/* Status Toggle */}
+              <div 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!statusUpdating) toggleStatus();
                 }}
+                className="flex flex-col items-center gap-2"
               >
-                <FiChevronRight className="w-6 h-6" style={{ color: '#FFFFFF', fontWeight: 'bold' }} />
+                <div
+                  className={`w-12 h-6 rounded-full transition-all duration-300 relative ${isOnline ? 'bg-green-500' : 'bg-white/10'}`}
+                >
+                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${isOnline ? 'left-7' : 'left-1'}`} />
+                </div>
               </div>
             </div>
           </div>
@@ -427,41 +381,35 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Earnings Highlight - Full Width */}
-        <div className="px-4 pt-4">
+        {/* Earnings Highlight (Dark Forest Gradient) */}
+        <div className="px-5 pt-6">
           <div
             onClick={() => navigate('/worker/wallet')}
-            className="rounded-2xl p-5 relative overflow-hidden cursor-pointer active:scale-98 transition-all"
+            className="rounded-[32px] p-6 relative overflow-hidden cursor-pointer active:scale-98 transition-all shadow-xl shadow-[#0F4A44]/10"
             style={{
-              background: 'linear-gradient(135deg, #001947 0%, #003b77 100%)',
-              boxShadow: '0 10px 20px rgba(0, 25, 71, 0.2)',
-              border: '1.5px solid rgba(255, 255, 255, 0.1)',
+              background: 'linear-gradient(135deg, #0F4A44 0%, #0D3D38 100%)',
+              border: '1px solid rgba(255, 255, 255, 0.05)',
             }}
           >
             <div className="relative z-10 flex items-center justify-between">
               <div>
-                <p className="text-[10px] text-white font-black opacity-70 uppercase tracking-[0.2em] mb-1">Total Earnings</p>
-                <h3 className="text-3xl font-black text-white tracking-tight">
+                <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.3em] mb-2">My Total Earnings</p>
+                <h3 className="text-4xl font-black text-white tracking-tighter">
                   ₹{stats.thisMonthEarnings.toLocaleString()}
                 </h3>
-                <div className="flex items-center gap-1.5 mt-2 px-2 py-0.5 rounded-full bg-white/10 w-fit">
-                  <FiTrendingUp className="w-3 h-3 text-green-400" />
-                  <span className="text-[10px] text-white font-bold">This Month</span>
+                <div className="flex items-center gap-1.5 mt-4 px-3 py-1 rounded-full bg-white/10 w-fit backdrop-blur-md">
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                  <span className="text-[9px] text-white font-black uppercase tracking-widest">Active Profit</span>
                 </div>
               </div>
               <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                style={{
-                  background: 'rgba(255, 255, 255, 0.15)',
-                  backdropFilter: 'blur(10px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                }}
+                className="w-14 h-14 rounded-2xl flex items-center justify-center bg-white/10 backdrop-blur-xl border border-white/10"
               >
                 <FaWallet className="w-7 h-7 text-white" />
               </div>
             </div>
-            {/* Decorative background shape */}
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
+            {/* Ambient Background Light */}
+            <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-white/5 rounded-full blur-3xl" />
           </div>
         </div>
 

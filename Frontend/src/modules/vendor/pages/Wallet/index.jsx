@@ -137,82 +137,81 @@ const Wallet = () => {
         </div>
       </header>
 
-      <main className="px-5">
-        {/* Available Earnings Card (Accent Gradient) */}
+      <main className="px-5 pt-8">
+        {/* Simple Total Earnings Card */}
         <div 
-          className="rounded-[32px] p-6 shadow-xl shadow-gray-200/20 mb-6 relative overflow-hidden"
-          style={{ background: themeColors.accentGradient }}
+          className="rounded-[40px] p-10 shadow-2xl shadow-[#0F4A44]/20 mb-10 relative overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #0F4A44 0%, #0D3D38 100%)' }}
         >
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05)_0%,transparent_50%)]" />
+          {/* Ambient Glow */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl" />
           
-          <div className="relative z-10">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-sm">
-                <FiArrowUp className="w-5 h-5 text-white" />
+          <div className="relative z-10 text-center">
+            <div className="flex flex-col items-center gap-2 mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10 mb-2">
+                <FiDollarSign className="w-7 h-7 text-white" />
               </div>
-              <p className="text-[11px] font-black text-white/60 uppercase tracking-widest">Available Earnings</p>
+              <p className="text-[12px] font-black text-white/50 uppercase tracking-[0.3em]">Total Earnings</p>
             </div>            
-            <div className="flex items-end justify-between">
-              <div>
-                <p className="text-3xl font-black text-white leading-none">₹{wallet.balance.toFixed(2)}</p>
-                <p className="text-[10px] font-bold text-white/40 mt-3 uppercase tracking-wider">Settlements are processed weekly</p>
-              </div>
-              <div className="bg-white/10 px-3 py-1.5 rounded-xl backdrop-blur-sm">
-                <span className="text-[10px] font-black text-white uppercase tracking-widest">Auto Settlement</span>
-              </div>
+            
+            <h2 className="text-5xl font-black text-white tracking-tighter mb-4">
+              ₹{wallet.earnings.toLocaleString()}
+            </h2>
+            
+            <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full border border-white/5 backdrop-blur-md mb-8">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-[10px] font-black text-white uppercase tracking-widest">Life-time profit</span>
             </div>
-          </div>
-        </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-white rounded-[28px] p-5 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
-                <FiArrowDown className="w-4 h-4 text-black" />
-              </div>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Amount Due</p>
-            </div>
-            <p className="text-xl font-black text-gray-900">₹{wallet.dues?.toLocaleString() || 0}</p>
-            {wallet.dues > 0 && (
-              <button 
+            <div className="flex gap-3">
+              <button
                 onClick={() => navigate('/vendor/wallet/settle')}
-                className="mt-3 w-full py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest"
+                className="flex-1 bg-white text-[#0F4A44] py-4 rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] shadow-xl shadow-black/20 active:scale-95 transition-all flex items-center justify-center gap-2"
               >
-                Pay Now
+                Settle Dues <FiSend className="w-3.5 h-3.5" />
               </button>
-            )}
-          </div>
-
-          <div className="bg-white rounded-[28px] p-5 shadow-sm border border-gray-100">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
-                <FiCheckCircle className="w-4 h-4 text-black" />
-              </div>
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Total Settled</p>
             </div>
-            <p className="text-xl font-black text-gray-900">₹{wallet.totalSettled?.toLocaleString() || 0}</p>
           </div>
         </div>
 
-        {/* Cash Limit Indicator (Black Theme) */}
-        <div className="bg-white rounded-[28px] p-5 shadow-sm border border-gray-100 mb-8">
-          <div className="flex items-center justify-between mb-3">
-            <p className="text-[11px] font-black text-gray-900 uppercase tracking-wider">Cash Collection Limit</p>
-            <p className="text-[11px] font-black text-black">
-              ₹{(wallet.dues || 0).toLocaleString()} / ₹{(wallet.cashLimit || 10000).toLocaleString()}
+        <div className="grid grid-cols-2 gap-4 mb-10">
+          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-black/5">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-[#0F4A44]/5 flex items-center justify-center">
+                <FiArrowDown className="w-4 h-4 text-[#0F4A44]" />
+              </div>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Cash Kept</p>
+            </div>
+            <p className="text-xl font-black text-gray-900 tracking-tight">₹{wallet.totalCashCollected?.toLocaleString() || 0}</p>
+          </div>
+
+          <div className="bg-white rounded-[32px] p-6 shadow-sm border border-black/5">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-[#0F4A44]/5 flex items-center justify-center">
+                <FiCheckCircle className="w-4 h-4 text-[#0F4A44]" />
+              </div>
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider">Settled</p>
+            </div>
+            <p className="text-xl font-black text-gray-900 tracking-tight">₹{wallet.totalSettled?.toLocaleString() || 0}</p>
+          </div>
+        </div>
+
+        {/* Cash Limit Indicator (Subtle) */}
+        <div className="bg-white rounded-[32px] p-6 shadow-sm border border-black/5 mb-10">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-[11px] font-black text-gray-900 uppercase tracking-widest">Account Health</p>
+            <p className="text-[11px] font-black text-[#0F4A44]">
+              {Math.round((wallet.dues / (wallet.cashLimit || 10000)) * 100)}%
             </p>
           </div>
-          <div className="w-full h-2 bg-gray-50 rounded-full overflow-hidden mb-2">
+          <div className="w-full h-2.5 bg-gray-50 rounded-full overflow-hidden border border-black/[0.02]">
             <div
-              className={`h-full transition-all duration-700 ${
-                (wallet.dues / (wallet.cashLimit || 10000)) > 0.8 ? 'bg-red-500' : 'bg-black'
+              className={`h-full transition-all duration-1000 rounded-full ${
+                (wallet.dues / (wallet.cashLimit || 10000)) > 0.8 ? 'bg-red-500' : 'bg-[#0F4A44]'
               }`}
               style={{ width: `${Math.min(100, (wallet.dues / (wallet.cashLimit || 10000)) * 100)}%` }}
             />
           </div>
-          <p className="text-[9px] font-bold text-gray-300">
-            * Pay dues regularly to avoid account blocking.
-          </p>
         </div>
 
         {/* Filter Buttons (Black Theme) */}

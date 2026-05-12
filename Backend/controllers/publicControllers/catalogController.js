@@ -356,38 +356,55 @@ const getPublicServices = async (req, res) => {
     const services = await Service.find(query)
       .populate({
         path: 'vendorId',
-        select: 'name businessName profilePhoto isOnline'
+        select: 'name businessName profilePhoto isOnline',
+        match: { isOnline: true } // ✅ Only populate if vendor is ONLINE
       })
       .populate('brandId', 'title iconUrl')
-      .sort({ createdAt: 1 })
+      .sort({ basePrice: 1 }) // Sort by price ascending to pick cheapest easily
       .lean();
 
-    // Filter out vendor-specific services if the vendor is offline
-    const filteredServices = services.filter(svc => {
-      // If it's a platform service (no vendorId), show it
-      if (!svc.vendorId) return true;
-      // If it's a vendor service, only show if the vendor is online
-      return svc.vendorId.isOnline === true;
+    // Grouping logic to avoid duplicates in UI
+    const groupedServices = {};
+    
+    services.forEach(svc => {
+      // Platform service (no vendorId) or Vendor service (must be online via populate match)
+      const isVendorService = svc.vendorId || svc._vendorId;
+      const isOnline = svc.vendorId !== null && svc.vendorId !== undefined;
+      
+      if (isVendorService && !isOnline) return; // Skip offline vendor services
+
+      // Create a key for grouping (title-based, case-insensitive)
+      const groupKey = svc.title.trim().toLowerCase();
+
+      if (!groupedServices[groupKey]) {
+        groupedServices[groupKey] = {
+          id: svc._id.toString(),
+          title: svc.title,
+          slug: svc.slug,
+          icon: svc.iconUrl,
+          basePrice: svc.basePrice,
+          gstPercentage: svc.gstPercentage,
+          description: svc.description,
+          brandId: svc.brandId?._id,
+          brandName: svc.brandId?.title,
+          brandIcon: svc.brandId?.iconUrl,
+          vendorId: svc.vendorId?._id,
+          vendorName: svc.vendorId?.businessName || svc.vendorId?.name,
+          vendorPhoto: svc.vendorId?.profilePhoto,
+          hasMultipleOptions: false
+        };
+      } else {
+        // We found a duplicate, since we sorted by price, we already have the cheapest one
+        // But we mark it as having multiple options if needed
+        groupedServices[groupKey].hasMultipleOptions = true;
+      }
     });
 
     res.status(200).json({
       success: true,
-      services: filteredServices.map(svc => ({
-        id: svc._id.toString(),
-        title: svc.title,
-        slug: svc.slug,
-        icon: svc.iconUrl,
-        basePrice: svc.basePrice,
-        gstPercentage: svc.gstPercentage,
-        description: svc.description,
-        brandId: svc.brandId?._id,
-        brandName: svc.brandId?.title,
-        brandIcon: svc.brandId?.iconUrl,
-        vendorId: svc.vendorId?._id,
-        vendorName: svc.vendorId?.businessName || svc.vendorId?.name,
-        vendorPhoto: svc.vendorId?.profilePhoto
-      }))
+      services: Object.values(groupedServices)
     });
+
   } catch (error) {
     console.error('Get public services error:', error);
     res.status(500).json({

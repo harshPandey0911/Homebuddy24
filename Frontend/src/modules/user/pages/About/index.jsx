@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Header from '../../components/layout/Header';
 import BottomNav from '../../components/layout/BottomNav';
 import { publicCatalogService } from '../../../../services/catalogService';
+import { useAuth } from '../../../../context/AuthContext';
 import AboutUs from '../Home/components/AboutUs';
 import LogoLoader from '../../../../components/common/LogoLoader';
 
 const AboutPage = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate(); // In case we need it, though not used here yet
+
+  const toAssetUrl = (url) => {
+    if (!url) return '';
+    const clean = url.replace('/api/upload', '/upload');
+    if (clean.startsWith('http')) return clean;
+    const base = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/api$/, '');
+    return `${base}${clean.startsWith('/') ? '' : '/'}${clean}`;
+  };
+
   const [homeContent, setHomeContent] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -32,6 +45,9 @@ const AboutPage = () => {
   return (
     <div className="min-h-screen bg-white">
       <Header 
+        title="About Us"
+        user={user}
+        toAssetUrl={toAssetUrl}
         siteIdentity={homeContent?.siteIdentity} 
         homeContent={homeContent}
       />

@@ -15,8 +15,8 @@ const initializeSocket = (server) => {
         'http://localhost:5174', 
         'http://127.0.0.1:5173', 
         'http://127.0.0.1:5174',
-        'https://www.homster.in',
-        'https://homster.in'
+        'https://www.Homebuddy24.in',
+        'https://Homebuddy24.in'
       ].filter(Boolean),
       credentials: true,
       methods: ["GET", "POST"]

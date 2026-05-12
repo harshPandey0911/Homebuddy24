@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FiSave, FiX, FiLink, FiUserPlus, FiSearch, FiChevronDown, FiCamera, FiUpload, FiMapPin } from 'react-icons/fi';
+import { FiSave, FiX, FiLink, FiUserPlus, FiSearch, FiChevronDown, FiCamera, FiUpload, FiMapPin, FiPlusCircle, FiCheck } from 'react-icons/fi';
 import AddressSelectionModal from '../../../user/pages/Checkout/components/AddressSelectionModal';
 import { vendorTheme as themeColors } from '../../../../theme';
 import Header from '../../components/layout/Header';
@@ -352,7 +352,6 @@ const AddEditWorker = () => {
 
   // selectedCategoriesData and allAvailableSkills removed as they are no longer needed
 
-  return (
   return (
     <div className="min-h-screen pb-20 bg-white">
       <Header title={isEdit ? 'Edit Worker' : 'Add Worker'} />

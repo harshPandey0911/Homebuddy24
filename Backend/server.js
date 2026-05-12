@@ -31,9 +31,9 @@ app.use(helmet({
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://www.homster.in',
-  'https://homster.in',
-  'https://api.homster.in'
+  'https://www.Homebuddy24.in',
+  'https://Homebuddy24.in',
+  'https://api.Homebuddy24.in'
 ];
 
 if (process.env.FRONTEND_URL) {
@@ -98,11 +98,14 @@ if (process.env.NODE_ENV === 'development') {
 // Rate limiting
 app.use('/api', rateLimiter);
 
+// Static files for local uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Health check route
 app.get('/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Homster API is running',
+    message: 'Homebuddy24 API is successfully running',
     timestamp: new Date().toISOString()
   });
 });
@@ -278,6 +281,16 @@ if (process.env.VERCEL !== '1' && !process.env.VERCEL_ENV) {
     console.log(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
   });
 
+  // Handle server errors (e.g., EADDRINUSE)
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`❌ Port ${PORT} is already in use. Kill the old process and retry.`);
+      process.exit(1);
+    } else {
+      throw err;
+    }
+  });
+
   // Initialize Socket.io
   const { initializeSocket, getIO } = require('./sockets');
   initializeSocket(server);
@@ -289,6 +302,20 @@ if (process.env.VERCEL !== '1' && !process.env.VERCEL_ENV) {
   const { initializeScheduler } = require('./services/bookingScheduler');
   initializeScheduler(getIO());
   console.log('[Server] Booking Scheduler initialized for wave-based alerting');
+
+  // Graceful shutdown — lets nodemon properly kill the process before restart
+  const shutdown = () => {
+    console.log('[Server] Shutting down gracefully...');
+    server.close(() => {
+      console.log('[Server] Closed. Exiting.');
+      process.exit(0);
+    });
+    // Force exit after 3 seconds if server doesn't close cleanly
+    setTimeout(() => process.exit(0), 3000).unref();
+  };
+
+  process.on('SIGTERM', shutdown);
+  process.on('SIGINT', shutdown);
 
   // Handle unhandled promise rejections
   process.on('unhandledRejection', (err) => {
@@ -306,6 +333,7 @@ if (process.env.VERCEL !== '1' && !process.env.VERCEL_ENV) {
 }
 
 module.exports = app;
+
 
 
 

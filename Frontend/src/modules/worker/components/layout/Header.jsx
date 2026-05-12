@@ -86,195 +86,60 @@ const Header = ({
 
   return (
     <header
-      className="sticky top-0 z-40 w-full bg-white"
+      className="sticky top-0 z-50 w-full"
       style={{
-        borderBottom: '2px solid rgba(156, 163, 175, 0.3)',
-        borderBottomLeftRadius: '20px',
-        borderBottomRightRadius: '20px',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.08)',
+        background: themeColors.primary,
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
       }}
     >
-      <div className="px-4 py-3 flex items-center justify-between">
+      <div className="px-5 py-3 flex items-center justify-between">
         {/* Left: Back button or Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           {showBack ? (
             <button
               onClick={handleBack}
-              className="p-2 rounded-full hover:bg-white/30 transition-colors active:scale-95"
+              className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10 active:scale-90 transition-all"
             >
-              <FiArrowLeft className="w-5 h-5" style={{ color: themeColors.button }} />
+              <FiArrowLeft className="w-5 h-5 text-white" />
             </button>
           ) : (
             <div
-              className="cursor-pointer"
+              className="cursor-pointer active:scale-95 transition-all"
               onClick={handleLogoClick}
-              onMouseEnter={() => {
-                if (logoRef.current) {
-                  gsap.to(logoRef.current, {
-                    scale: 1.2,
-                    duration: 0.3,
-                    ease: 'power2.out',
-                  });
-                }
-              }}
-              onMouseLeave={() => {
-                if (logoRef.current) {
-                  gsap.to(logoRef.current, {
-                    scale: 1.0,
-                    duration: 0.3,
-                    ease: 'power2.out',
-                  });
-                }
-              }}
             >
-              <Logo
-                ref={logoRef}
-                className="h-12 w-auto"
-              />
+              <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-1">
+                Worker<span className="text-white/40">Hub</span>
+              </h1>
             </div>
           )}
-          {showBack && <h1 className="text-lg font-bold text-gray-800">{title || 'Worker'}</h1>}
+          {showBack && <h1 className="text-lg font-black text-white tracking-tight">{title || 'Worker'}</h1>}
         </div>
 
         {/* Right: Search and Notifications */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {showSearch && (
             <button
-              className="p-2 rounded-full hover:bg-white/30 transition-colors active:scale-95"
+              className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10 active:scale-90 transition-all"
               onClick={() => navigate('/worker/jobs')}
             >
-              <FiSearch className="w-5 h-5" style={{ color: themeColors.button }} />
+              <FiSearch className="w-5 h-5 text-white" />
             </button>
           )}
           {showNotifications && (
             <div
-              ref={bellButtonRef}
-              className="relative rounded-full cursor-pointer group active:scale-95 transition-transform duration-300"
-              style={{
-                width: '42px',
-                height: '42px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '2px' // Spacing for border
-              }}
-              onMouseEnter={() => {
-                if (bellButtonRef.current && bellRef.current) {
-                  const btn = bellButtonRef.current.querySelector('button');
-
-                  // Scale Wrapper
-                  gsap.to(bellButtonRef.current, {
-                    scale: 1.15,
-                    duration: 0.3,
-                    ease: 'power2.out',
-                  });
-
-                  // Shadow on inner button
-                  if (btn) {
-                    gsap.to(btn, {
-                      boxShadow: count > 0
-                        ? '0 6px 20px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.5)'
-                        : `0 4px 12px ${themeColors.brand.teal}40`,
-                      duration: 0.3,
-                      ease: 'power2.out',
-                    });
-                  }
-
-                  // Rotate Bell
-                  gsap.to(bellRef.current, {
-                    rotation: 15,
-                    scale: 1.1,
-                    duration: 0.3,
-                    ease: 'power2.out',
-                  });
-                }
-              }}
-              onMouseLeave={() => {
-                if (bellButtonRef.current && bellRef.current) {
-                  const btn = bellButtonRef.current.querySelector('button');
-
-                  gsap.to(bellButtonRef.current, {
-                    scale: 1.0,
-                    duration: 0.3,
-                    ease: 'power2.out',
-                  });
-
-                  if (btn) {
-                    gsap.to(btn, {
-                      boxShadow: count > 0
-                        ? '0 3px 12px rgba(239, 68, 68, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
-                        : `0 2px 6px ${themeColors.brand.teal}26`,
-                      duration: 0.3,
-                      ease: 'power2.out',
-                    });
-                  }
-
-                  gsap.to(bellRef.current, {
-                    rotation: 0,
-                    scale: 1.0,
-                    duration: 0.3,
-                    ease: 'power2.out',
-                  });
-                }
-              }}
+              className="relative cursor-pointer active:scale-90 transition-all"
+              onClick={handleNotifications}
             >
-              {/* 1. Animated Running Border */}
-              <div
-                className="absolute inset-[-2px] rounded-full z-0"
-                style={{
-                  background: themeColors.brand.conic,
-                  animation: 'spin 2s linear infinite',
-                  boxShadow: `0 0 8px ${themeColors.brand.orange}26`
-                }}
-              />
-
-              {/* 2. White Mask (to hide center of conic gradient) */}
-              <div className="absolute inset-[1px] rounded-full bg-white z-0" />
-
-              {/* 3. Inner Button */}
-              <button
-                onClick={handleNotifications}
-                className="relative z-10 w-full h-full rounded-full flex items-center justify-center overflow-hidden"
-                style={{
-                  background: count > 0
-                    ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.12) 100%)'
-                    : 'linear-gradient(135deg, rgba(52, 121, 137, 0.1) 0%, rgba(187, 95, 54, 0.1) 100%)',
-                  boxShadow: count > 0
-                    ? '0 3px 12px rgba(239, 68, 68, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.4)'
-                    : '0 2px 6px rgba(52, 121, 137, 0.15)',
-                }}
-              >
-                {/* Define Gradient for Icon */}
-                <svg width="0" height="0" className="absolute">
-                  <linearGradient id="homestr-bell-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor={themeColors.brand.teal} />
-                    <stop offset="50%" stopColor={themeColors.brand.yellow} />
-                    <stop offset="100%" stopColor={themeColors.brand.orange} />
-                  </linearGradient>
-                </svg>
-
-                <FiBell
-                  ref={bellRef}
-                  className="w-5 h-5 transition-all duration-300"
-                  style={{
-                    stroke: count > 0 ? '#EF4444' : 'url(#homestr-bell-gradient)',
-                    strokeWidth: '2.5',
-                    color: 'transparent',
-                    filter: count > 0
-                      ? 'drop-shadow(0 2px 6px rgba(239, 68, 68, 0.4))'
-                      : 'drop-shadow(0 1px 3px rgba(52, 121, 137, 0.3))',
-                  }}
-                />
-              </button>
-              {/* 4. Active Badge (Moved outside for robustness and to prevent clipping) */}
+              <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/10">
+                <FiBell className="w-5 h-5 text-white" />
+              </div>
               {count > 0 && (
                 <span
-                  className="absolute -top-1.5 -right-1.5 bg-gradient-to-br from-red-500 to-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center z-20"
+                  className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-black rounded-full flex items-center justify-center z-20 border-2"
                   style={{
                     minWidth: '20px',
                     height: '20px',
-                    boxShadow: '0 3px 8px rgba(239, 68, 68, 0.5), 0 0 0 2px #fff',
-                    border: '2px solid #fff'
+                    borderColor: themeColors.primary
                   }}
                 >
                   {count > 9 ? '9+' : count}

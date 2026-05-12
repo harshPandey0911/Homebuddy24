@@ -11,24 +11,24 @@
 
 // Homestr LOGO Core Brand Colors
 const brand = {
-  teal: 'var(--brand-teal)',
+  teal: '#0F4A44', // Dark Forest Green/Teal from screenshot
   yellow: 'var(--brand-yellow)',
   orange: 'var(--brand-orange)',
-  gradient: 'var(--brand-gradient)',
-  conic: 'conic-gradient(from 0deg, var(--brand-teal), var(--brand-yellow), var(--brand-orange), var(--brand-teal))'
+  gradient: 'linear-gradient(135deg, #0F4A44 0%, #0D3D38 100%)',
+  conic: 'conic-gradient(from 0deg, #0F4A44, #FACC15, #F97316, #0F4A44)'
 };
 
 // User Theme Colors
 const userTheme = {
   backgroundGradient: 'var(--bg-gradient)',
   gradient: brand.gradient,
-  headerGradient: 'linear-gradient(135deg, #00a6a6 0%, #008a8a 50%, #006b6b 100%)', // Keeping specific gradient for now
-  headerBg: 'var(--primary-header)',
-  button: brand.teal,
-  primary: brand.teal,
-  icon: brand.teal,
-  cardShadow: 'var(--card-shadow)',
-  cardBorder: '1px solid var(--border-color)',
+  headerGradient: 'linear-gradient(180deg, #0F4A44 0%, #0D3D38 100%)',
+  headerBg: '#0F4A44',
+  button: '#0F4A44',
+  primary: '#0F4A44',
+  icon: '#0F4A44',
+  cardShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+  cardBorder: '1px solid rgba(0, 0, 0, 0.05)',
   brand: brand
 };
 
@@ -36,11 +36,11 @@ const userTheme = {
 const vendorTheme = {
   backgroundGradient: 'var(--bg-gradient)',
   gradient: brand.gradient,
-  headerGradient: '#000000',
-  accentGradient: 'linear-gradient(135deg, #1A3C43 0%, #102A30 100%)',
-  button: '#000000',
-  primary: '#000000',
-  icon: '#000000',
+  headerGradient: brand.teal,
+  accentGradient: 'linear-gradient(135deg, #0F4A44 0%, #0D3D38 100%)',
+  button: brand.teal,
+  primary: brand.teal,
+  icon: brand.teal,
   brand: brand
 };
 

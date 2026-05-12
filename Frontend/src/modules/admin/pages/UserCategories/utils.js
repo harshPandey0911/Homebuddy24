@@ -2,10 +2,17 @@ export const LS_KEY = "adminUserAppCatalog";
 
 export const toAssetUrl = (url) => {
   if (!url) return '';
-  // For Cloudinary URLs, return as-is
+  // For Cloudinary or full URLs, return as-is
   if (url.startsWith('http')) return url;
-  // For any other URLs, return as-is (they should already be full URLs from Cloudinary)
-  return url;
+
+  // For local uploads, prepend API base URL
+  const baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/api$/, '');
+  const cleanUrl = url.startsWith('/') ? url : `/${url}`;
+  
+  // Handle /api/upload -> /upload mapping if needed
+  const finalizedUrl = cleanUrl.replace('/api/upload', '/upload');
+  
+  return `${baseUrl}${finalizedUrl}`;
 };
 
 export const slugify = (value) =>

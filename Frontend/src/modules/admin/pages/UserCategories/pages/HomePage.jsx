@@ -180,7 +180,7 @@ const HomePage = () => {
   });
   const [editingCardId, setEditingCardId] = useState(null);
 
-  // New Nexora Go Sections
+  // New Homebuddy24 Sections
   const [heroForm, setHeroForm] = useState({ title: "", subtitle: "", primaryBtnText: "", secondaryBtnText: "", imageUrl: "" });
   const [appDownloadForm, setAppDownloadForm] = useState({ title: "", subtitle: "", playStoreUrl: "", appStoreUrl: "", qrCodeUrl: "", imageUrl: "" });
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false);
@@ -279,7 +279,7 @@ const HomePage = () => {
             stats: addIds(hc.stats || []),
             appDownload: hc.appDownload || { title: "", subtitle: "", playStoreUrl: "", appStoreUrl: "", qrCodeUrl: "", imageUrl: "" },
             navLinks: addIds(hc.navLinks || []),
-            siteIdentity: hc.siteIdentity || { brandName: "NEXORA GO", slogan: "Everything you need, one place" },
+            siteIdentity: hc.siteIdentity || { brandName: "Homebuddy24", slogan: "Everything you need, one place" },
             isHowItWorksVisible: hc.isHowItWorksVisible ?? true,
             howItWorks: hc.howItWorks || { title: "", subtitle: "", items: [] },
             isAboutUsVisible: hc.isAboutUsVisible ?? true,
@@ -628,7 +628,7 @@ const HomePage = () => {
                 type="text"
                 value={identityForm.brandName || home?.siteIdentity?.brandName || ""}
                 onChange={(e) => setIdentityForm({ ...identityForm, brandName: e.target.value })}
-                placeholder="NEXORA GO"
+                placeholder="Homebuddy24"
                 className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
@@ -709,14 +709,59 @@ const HomePage = () => {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1">Hero Image URL</label>
-                <input
-                  type="text"
-                  value={heroForm.imageUrl || home?.heroSection?.imageUrl || ""}
-                  onChange={(e) => setHeroForm({ ...heroForm, imageUrl: e.target.value })}
-                  placeholder="/hero-illustration.png"
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
-                />
+                <label className="block text-sm font-bold text-gray-700 mb-1">Hero Image</label>
+                <div className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      value={heroForm.imageUrl || home?.heroSection?.imageUrl || ""}
+                      onChange={(e) => setHeroForm({ ...heroForm, imageUrl: e.target.value })}
+                      placeholder="/hero-illustration.png"
+                      className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                    />
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        try {
+                          setUploading(true);
+                          const res = await serviceService.uploadImage(file, 'hero', (p) => setUploadProgress(p));
+                          if (res.success) {
+                            setHeroForm({ ...heroForm, imageUrl: res.imageUrl });
+                            toast.success("Hero image uploaded!");
+                          } else {
+                            toast.error(res.message);
+                          }
+                        } catch (err) {
+                          toast.error("Upload failed");
+                        } finally {
+                          setUploading(false);
+                          setUploadProgress(0);
+                        }
+                      }}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      disabled={uploading}
+                    />
+                    <button
+                      className={`px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 border border-dashed border-blue-300 text-blue-600 hover:bg-blue-50 transition-all ${uploading ? 'opacity-50' : ''}`}
+                    >
+                      {uploading ? `${uploadProgress}%` : 'Upload'}
+                    </button>
+                  </div>
+                </div>
+                {(heroForm.imageUrl || home?.heroSection?.imageUrl) && (
+                  <div className="mt-2 w-20 h-20 rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                    <img 
+                      src={toAssetUrl(heroForm.imageUrl || home?.heroSection?.imageUrl)} 
+                      alt="Preview" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

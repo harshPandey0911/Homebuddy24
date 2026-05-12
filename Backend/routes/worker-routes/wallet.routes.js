@@ -5,7 +5,8 @@ const { isWorker } = require('../../middleware/roleMiddleware');
 const {
   getWallet,
   getTransactions,
-  requestPayout
+  requestPayout,
+  handoverCash
 } = require('../../controllers/workerControllers/workerWalletController');
 
 // Get wallet balance
@@ -17,4 +18,8 @@ router.get('/transactions', authenticate, isWorker, getTransactions);
 // Request payout from vendor
 router.post('/request-payout', authenticate, isWorker, requestPayout);
 
+// Handover collected cash to vendor
+router.post('/handover-cash', authenticate, isWorker, handoverCash);
+
 module.exports = router;
+

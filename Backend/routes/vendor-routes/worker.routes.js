@@ -26,12 +26,13 @@ const addWorkerValidation = [
 ];
 
 const updateWorkerValidation = [
-  body('name').optional().trim().notEmpty(),
-  body('email').optional().isEmail(),
+  body('name').optional().trim().notEmpty().withMessage('Name cannot be empty'),
+  body('email').optional({ checkFalsy: true }).isEmail().withMessage('Valid email is required'),
+  body('phone').optional().trim().isLength({ min: 10, max: 10 }).withMessage('Phone must be 10 digits'),
   body('serviceCategory').optional().trim(),
-  body('serviceCategories').optional().isArray(),
-  body('skills').optional().isArray(),
-  body('status').optional().isIn(['active', 'inactive', 'suspended'])
+  body('serviceCategories').optional().isArray().withMessage('Service categories must be an array'),
+  body('skills').optional().isArray().withMessage('Skills must be an array'),
+  body('status').optional().isIn(['active', 'inactive', 'suspended']).withMessage('Invalid status')
 ];
 
 // Routes

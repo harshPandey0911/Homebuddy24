@@ -16,10 +16,18 @@ router.post('/upload', uploadImage, async (req, res) => {
       });
     }
 
-    // When using multer-storage-cloudinary, req.file.path is the secure_url
+    // Handle both Cloudinary and Local Storage
+    let imageUrl = req.file.path;
+    
+    // If it's local storage (multer-disk-storage), req.file.path is a relative filesystem path
+    // We want to return a public URL path
+    if (req.file.filename && !req.file.path.startsWith('http')) {
+      imageUrl = `/uploads/${req.file.filename}`;
+    }
+
     res.status(200).json({
       success: true,
-      imageUrl: req.file.path,
+      imageUrl,
       message: 'File uploaded successfully'
     });
   } catch (error) {

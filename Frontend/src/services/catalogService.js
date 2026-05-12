@@ -98,15 +98,24 @@ export const brandService = {
     return response.data;
   },
 
-  // Upload brand image/video directly to Cloudinary
+  // Upload brand image through backend (handles Cloudinary or Local fallback)
   uploadImage: async (file, folder = 'brands', onProgress) => {
     try {
-      const url = await uploadToCloudinary(file, folder, onProgress);
-      return {
-        success: true,
-        imageUrl: url,
-        message: 'File uploaded successfully'
-      };
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', folder);
+
+      const response = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          if (onProgress) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            onProgress(percentCompleted);
+          }
+        }
+      });
+
+      return response.data;
     } catch (error) {
       return {
         success: false,
@@ -155,15 +164,24 @@ export const serviceService = {
     return response.data;
   },
 
-  // Upload service image directly to Cloudinary
+  // Upload service image through backend (handles Cloudinary or Local fallback)
   uploadImage: async (file, folder = 'services', onProgress) => {
     try {
-      const url = await uploadToCloudinary(file, folder, onProgress);
-      return {
-        success: true,
-        imageUrl: url,
-        message: 'File uploaded successfully'
-      };
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('folder', folder);
+
+      const response = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        onUploadProgress: (progressEvent) => {
+          if (onProgress) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            onProgress(percentCompleted);
+          }
+        }
+      });
+
+      return response.data;
     } catch (error) {
       return {
         success: false,
